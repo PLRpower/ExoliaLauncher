@@ -16,6 +16,7 @@ import fr.flowarg.flowupdater.versions.ForgeVersionBuilder;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 import fr.flowarg.flowupdater.versions.VersionType;
 import fr.plrpower.exolia.launcher.auth.mineweb.mc.MinewebGameTweak;
+import fr.plrpower.exolia.launcher.auth.mineweb.mc.MinewebGameType;
 import fr.plrpower.exolia.launcher.auth.mineweb.utils.Get;
 import fr.theshark34.openlauncherlib.LaunchException;
 import fr.theshark34.openlauncherlib.external.ExternalLaunchProfile;
@@ -28,7 +29,7 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class Launcher {
-    public static final GameVersion EX_VERSION = new GameVersion("1.12.2", GameType.V1_8_HIGHER);
+    public static final GameVersion EX_VERSION = new GameVersion("1.12.2", MinewebGameType.V1_8_HIGHER);
     public static GameInfos EX_INFOS = new GameInfos("ExoliaV2", EX_VERSION, new GameTweak[] {MinewebGameTweak.FORGE });
     public static final Path EX_DIR = EX_INFOS.getGameDir();
     public static final File EX_RAM_FILE = new File("ram.txt");

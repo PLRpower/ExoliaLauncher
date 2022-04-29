@@ -2,8 +2,6 @@ package fr.plrpower.exolia.launcher.auth.mineweb.mc;
 
 import fr.theshark34.openlauncherlib.minecraft.GameInfos;
 import fr.theshark34.openlauncherlib.minecraft.GameTweak;
-import fr.theshark34.openlauncherlib.minecraft.GameType;
-import fr.theshark34.openlauncherlib.util.LogUtil;
 
 public abstract class MinewebGameTweak {
     public static final String LAUNCHWRAPPER_MAIN_CLASS = "net.minecraft.launchwrapper.Launch";

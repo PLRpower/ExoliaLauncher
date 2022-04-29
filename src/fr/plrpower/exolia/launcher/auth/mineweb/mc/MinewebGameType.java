@@ -3,7 +3,6 @@ package fr.plrpower.exolia.launcher.auth.mineweb.mc;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.flowarg.flowupdater.FlowUpdater;
 import fr.plrpower.exolia.launcher.Launcher;
 import fr.plrpower.exolia.launcher.auth.mineweb.utils.Get;
 import fr.theshark34.openlauncherlib.minecraft.*;
