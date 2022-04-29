@@ -15,7 +15,7 @@ import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 import fr.flowarg.flowupdater.versions.ForgeVersionBuilder;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 import fr.flowarg.flowupdater.versions.VersionType;
-import fr.plrpower.exolia.launcher.auth.mineweb.mc.MinewebGameType;
+import fr.plrpower.exolia.launcher.auth.mineweb.mc.MinewebGameTweak;
 import fr.plrpower.exolia.launcher.auth.mineweb.utils.Get;
 import fr.theshark34.openlauncherlib.LaunchException;
 import fr.theshark34.openlauncherlib.external.ExternalLaunchProfile;
@@ -28,14 +28,14 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class Launcher {
-    public static final GameVersion EX_VERSION = new GameVersion("1.12.2", MinewebGameType.V1_8_HIGHER);
-    public static GameInfos EX_INFOS = new GameInfos("ExoliaV2", EX_VERSION, new GameTweak[] { GameTweak.FORGE });
+    public static final GameVersion EX_VERSION = new GameVersion("1.12.2", GameType.V1_8_HIGHER);
+    public static GameInfos EX_INFOS = new GameInfos("ExoliaV2", EX_VERSION, new GameTweak[] {MinewebGameTweak.FORGE });
     public static final Path EX_DIR = EX_INFOS.getGameDir();
     public static final File EX_RAM_FILE = new File(String.valueOf(EX_DIR), "ram.txt");
     private static Thread updateThread;
     public static AuthInfos authInfos = new AuthInfos(Get.getSession.getUsername(), Get.getSession.getUuid(), Get.getSession.getClientToken());
 
-    public static void updateMinecraftForge() throws Exception {
+    public static void updateMinecraftForge() {
         IProgressCallback callback = new IProgressCallback() {
             private final DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
@@ -46,7 +46,7 @@ public class Launcher {
             }
 
             public void update(long downloaded, long max) {
-                LauncherFrame.getinstance().getLauncherPanel().setPercentText(String.valueOf(this.decimalFormat.format(downloaded * 100.0D / max)) + "%");
+                LauncherFrame.getinstance().getLauncherPanel().setPercentText(this.decimalFormat.format(downloaded * 100.0D / max) + "%");
                 LauncherFrame.getinstance().getLauncherPanel().getProgressBar().setMaximum((int)max);
                 LauncherFrame.getinstance().getLauncherPanel().getProgressBar().setValue((int)downloaded);
             }
@@ -60,11 +60,11 @@ public class Launcher {
             AbstractForgeVersion forge = (new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW))
                     .withForgeVersion("1.12.2-14.23.5.2860")
                     .withMods(Mod.getModsFromJson("https://exolia.site/app/webroot/mods.json"))
-                    .withFileDeleter(new ModFileDeleter(true, new String[0]))
+                    .withFileDeleter(new ModFileDeleter(true))
                     .build();
             FlowUpdater updater = (new FlowUpdater.FlowUpdaterBuilder())
                     .withVanillaVersion(version)
-                    .withLogger((ILogger)logger)
+                    .withLogger(logger)
                     .withProgressCallback(callback)
                     .withForgeVersion(forge)
                     .withExternalFiles(ExternalFile.getExternalFilesFromJson("https://exolia.site/app/webroot/externalfiles.json"))
@@ -76,7 +76,7 @@ public class Launcher {
     }
 
     public static void launch() throws LaunchException {
-        ExternalLaunchProfile profile = MinecraftLauncher.createExternalProfile(EX_INFOS, new GameFolder("assets", "libraries", "natives", "client.jar"), authInfos);
+        ExternalLaunchProfile profile = MinecraftLauncher.createExternalProfile(EX_INFOS, GameFolder.FLOW_UPDATER, authInfos);
         profile.getVmArgs().addAll(Arrays.asList(LauncherFrame.getinstance().getLauncherPanel().getRamSelector().getRamArguments()));
         ExternalLauncher launcher = new ExternalLauncher(profile);
         Process p = launcher.launch();
@@ -94,7 +94,7 @@ public class Launcher {
         updateThread.interrupt();
     }
 
-    private static Launcher instance = new Launcher();
+    private static final Launcher instance = new Launcher();
 
     public static Launcher getInstance() {
         return instance;
@@ -113,7 +113,7 @@ public class Launcher {
         POST_EXECUTIONS("Vdes fichiers..."),
         END("Fini !");
 
-        String details;
+        final String details;
 
         StepInfo(String details) {
             this.details = details;
