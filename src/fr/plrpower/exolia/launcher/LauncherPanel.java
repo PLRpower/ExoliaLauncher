@@ -41,7 +41,7 @@ public class LauncherPanel extends JPanel implements SwingerEventListener {
     private final STexturedButton siteButton = new STexturedButton(Swinger.getResource("site.png"), Swinger.getResource("sitehover.png"), Swinger.getResource("sitehover.png"));
     private final STexturedButton ramButton = new STexturedButton(Swinger.getResource("RAM.png"));
 
-    private final RamSelector ramSelector = new RamSelector(new File(String.valueOf(Launcher.EX_DIR), "ram.txt"));
+    private final RamSelector ramSelector = new RamSelector(Launcher.EX_RAM_FILE);
     private final Saver saver = new Saver(new File(String.valueOf(Launcher.EX_DIR), "launcher.properties"));
     JTextField usernameField = new JTextField(this.saver.get("username"));
 

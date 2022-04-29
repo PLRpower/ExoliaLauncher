@@ -31,7 +31,7 @@ public class Launcher {
     public static final GameVersion EX_VERSION = new GameVersion("1.12.2", GameType.V1_8_HIGHER);
     public static GameInfos EX_INFOS = new GameInfos("ExoliaV2", EX_VERSION, new GameTweak[] {MinewebGameTweak.FORGE });
     public static final Path EX_DIR = EX_INFOS.getGameDir();
-    public static final File EX_RAM_FILE = new File(String.valueOf(EX_DIR), "ram.txt");
+    public static final File EX_RAM_FILE = new File("ram.txt");
     private static Thread updateThread;
     public static AuthInfos authInfos = new AuthInfos(Get.getSession.getUsername(), Get.getSession.getUuid(), Get.getSession.getClientToken());
 
