@@ -1,15 +1,13 @@
 <component name="libraryTable">
   <library name="AuthMineweb_1.3.7">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/libs/AuthMineweb_1.3.7.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/commons-compress-1.21.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/flowmultitools-1.4.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/flowupdater-1.5.2.jar!/" />
-      <root url="jar://$PROJECT_DIR$/libs/gson-2.8.9.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/java-discord-rpc-2.0.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/libs/MinewebAuthAPI-1.0.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/libs/openlauncherlib-3.0.5.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/swinger-1.0.0-BETA.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/openlauncherlib-3.2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/MinewebAuthAPI-1.0.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
