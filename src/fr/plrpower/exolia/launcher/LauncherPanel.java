@@ -1,10 +1,10 @@
 package fr.plrpower.exolia.launcher;
 
-import fr.plrpower.exolia.launcher.auth.exception.DataEmptyException;
-import fr.plrpower.exolia.launcher.auth.exception.DataWrongException;
-import fr.plrpower.exolia.launcher.auth.exception.ServerNotFoundException;
-import fr.plrpower.exolia.launcher.auth.mineweb.AuthMineweb;
-import fr.plrpower.exolia.launcher.auth.mineweb.utils.TypeConnection;
+import fr.exolia.auth.exception.DataEmptyException;
+import fr.exolia.auth.exception.DataWrongException;
+import fr.exolia.auth.exception.ServerNotFoundException;
+import fr.exolia.auth.mineweb.AuthMineweb;
+import fr.exolia.auth.mineweb.utils.TypeConnection;
 import fr.theshark34.openlauncherlib.util.Saver;
 import fr.theshark34.openlauncherlib.util.ramselector.RamSelector;
 import fr.theshark34.swinger.Swinger;
@@ -19,11 +19,7 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class LauncherPanel extends JPanel implements SwingerEventListener {
 
@@ -46,8 +42,8 @@ public class LauncherPanel extends JPanel implements SwingerEventListener {
     JTextField usernameField = new JTextField(this.saver.get("username"));
 
     public SColoredBar progressBar = new SColoredBar(new Color(0, 0, 0, 0), new Color(44, 209, 115, 255));
-    public static JLabel percentLabel = new JLabel("");
-    public static JLabel stepLabel = new JLabel("");
+    public static JLabel percentLabel = new JLabel("", SwingConstants.CENTER);
+    public static JLabel stepLabel = new JLabel("", SwingConstants.CENTER);
 
     public LauncherPanel() {
         setLayout(null);
@@ -185,7 +181,7 @@ public class LauncherPanel extends JPanel implements SwingerEventListener {
         } else if (e.getSource() == this.quitButton) {
             System.exit(0);
         } else if (e.getSource() == this.hideButton) {
-            LauncherFrame.getinstance().setState(1);
+            LauncherFrame.getInstance().setState(1);
         } else if (e.getSource() == this.youtubeButton) {
             try {
                 Desktop.getDesktop().browse(new URI("https://www.youtube.com/channel/UCZVvJ4mquSagWJV8jV87DGQ"));

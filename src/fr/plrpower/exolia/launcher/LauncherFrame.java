@@ -6,9 +6,16 @@ import fr.theshark34.swinger.util.WindowMover;
 import javax.swing.*;
 
 public class LauncherFrame extends JFrame {
-    private static LauncherFrame instance;
 
+    private static LauncherFrame instance;
     private final LauncherPanel launcherPanel;
+
+    public static LauncherFrame getInstance() {
+        return instance;
+    }
+    public LauncherPanel getLauncherPanel() {
+        return this.launcherPanel;
+    }
 
     public LauncherFrame() {
         setTitle("Exolia Launcher");
@@ -28,13 +35,5 @@ public class LauncherFrame extends JFrame {
         Swinger.setSystemLookNFeel();
         Swinger.setResourcePath("/fr/plrpower/exolia/launcher/resources/");
         instance = new LauncherFrame();
-    }
-
-    public static LauncherFrame getinstance() {
-        return instance;
-    }
-
-    public LauncherPanel getLauncherPanel() {
-        return this.launcherPanel;
     }
 }
