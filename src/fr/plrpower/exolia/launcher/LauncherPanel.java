@@ -1,10 +1,6 @@
 package fr.plrpower.exolia.launcher;
 
-import fr.exolia.auth.exception.DataEmptyException;
-import fr.exolia.auth.exception.DataWrongException;
-import fr.exolia.auth.exception.ServerNotFoundException;
-import fr.exolia.auth.mineweb.AuthMineweb;
-import fr.exolia.auth.mineweb.utils.TypeConnection;
+import com.azuriom.azauth.AuthenticationException;
 import fr.theshark34.openlauncherlib.util.Saver;
 import fr.theshark34.openlauncherlib.util.ramselector.RamSelector;
 import fr.theshark34.swinger.Swinger;
@@ -126,105 +122,88 @@ public class LauncherPanel extends JPanel implements SwingerEventListener {
         add(this.ramButton);
     }
 
-    public void onEvent(SwingerEvent e) {
-        if (e.getSource() == this.playButton) {
+    public void onEvent(SwingerEvent event) {
+        if (event.getSource() == this.playButton) {
             setFieldsEnabled(false);
-            AuthMineweb.setTypeConnection(TypeConnection.launcher);
-            AuthMineweb.setUrlRoot("https://exolia.site");
-            AuthMineweb.setUsername(this.usernameField.getText());
-            AuthMineweb.setPassword(String.valueOf(this.passwordField.getPassword()));
-            try {
-                AuthMineweb.start();
-            } catch (DataWrongException e1) {
-                e1.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Erreur, mauvais pseudo ou mot de passe.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                setFieldsEnabled(true);
-                return;
-            } catch (DataEmptyException e1) {
-                e1.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Erreur, veuillez entrer un pseudo et un mot de passe valides.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                setFieldsEnabled(true);
-                return;
-            } catch (ServerNotFoundException e1) {
-                e1.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Erreur, connexion impossible.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                setFieldsEnabled(true);
-                return;
-            } catch (IOException e1) {
-                e1.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Erreur inconnue, essayez plus tard.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                setFieldsEnabled(true);
-                return;
-            }
-            if (AuthMineweb.isConnected()) {
-                Thread t = new Thread(() -> {
-                    try {
-                        Launcher.updateMinecraftForge();
-                    } catch (Exception e12) {
-                        Launcher.interruptThread();
-                        JOptionPane.showMessageDialog(LauncherPanel.this, "Erreur, impossible de mettre jour : " + e12, "Erreur", JOptionPane.ERROR_MESSAGE);
-                        LauncherPanel.this.setFieldsEnabled(true);
-                        return;
-                    }
-                    Launcher.getInstance().discord();
-                    LauncherPanel.this.getRamSelector().save();
-                    LauncherPanel.this.saver.set("username", LauncherPanel.this.usernameField.getText());
-                    try {
-                        Launcher.launch();
-                    } catch (Exception e12) {
-                        JOptionPane.showMessageDialog(LauncherPanel.this, "Erreur, impossible de lancer le jeu : " + e12, "Erreur", JOptionPane.ERROR_MESSAGE);
-                        LauncherPanel.this.setFieldsEnabled(true);
-                    }
-                });
-                t.start();
-            }
-        } else if (e.getSource() == this.quitButton) {
+            Thread t = new Thread(() -> {
+                try {
+                    Launcher.auth(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+                } catch (AuthenticationException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Erreur, impossible de se connecter.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    setFieldsEnabled(true);
+                    return;
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(this, "Erreur, connexion impossible.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    setFieldsEnabled(true);
+                    return;
+                }
+                try {
+                    Launcher.updateMinecraftForge();
+                } catch (Exception e) {
+                    Launcher.interruptThread();
+                    JOptionPane.showMessageDialog(LauncherPanel.this, "Erreur, impossible de mettre jour : " + e, "Erreur", JOptionPane.ERROR_MESSAGE);
+                    setFieldsEnabled(true);
+                    return;
+                }
+                Launcher.getInstance().discord();
+                getRamSelector().save();
+                saver.set("username", LauncherPanel.this.usernameField.getText());
+                try {
+                    Launcher.launch();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(LauncherPanel.this, "Erreur, impossible de lancer le jeu : " + e, "Erreur", JOptionPane.ERROR_MESSAGE);
+                    setFieldsEnabled(true);
+                }
+            });
+            t.start();
+        } else if (event.getSource() == this.quitButton) {
             System.exit(0);
-        } else if (e.getSource() == this.hideButton) {
+        } else if (event.getSource() == this.hideButton) {
             LauncherFrame.getInstance().setState(1);
-        } else if (e.getSource() == this.youtubeButton) {
+        } else if (event.getSource() == this.youtubeButton) {
             try {
                 Desktop.getDesktop().browse(new URI("https://www.youtube.com/channel/UCZVvJ4mquSagWJV8jV87DGQ"));
             } catch (IOException|java.net.URISyntaxException e1) {
                 e1.printStackTrace();
             }
-        } else if (e.getSource() == this.twitterButton) {
+        } else if (event.getSource() == this.twitterButton) {
             try {
                 Desktop.getDesktop().browse(new URI("https://twitter.com/Exolia8"));
             } catch (IOException|java.net.URISyntaxException e1) {
                 e1.printStackTrace();
             }
-        } else if (e.getSource() == this.instagramButton) {
+        } else if (event.getSource() == this.instagramButton) {
             try {
                 Desktop.getDesktop().browse(new URI("https://www.instagram.com/exoliapvpfaction/"));
             } catch (IOException|java.net.URISyntaxException e1) {
                 e1.printStackTrace();
             }
-        } else if (e.getSource() == this.tiktokButton) {
+        } else if (event.getSource() == this.tiktokButton) {
             try {
                 Desktop.getDesktop().browse(new URI("https://www.tiktok.com/@exolia_officiel/"));
             } catch (IOException|java.net.URISyntaxException e1) {
                 e1.printStackTrace();
             }
-        } else if (e.getSource() == this.discordButton) {
+        } else if (event.getSource() == this.discordButton) {
             try {
                 Desktop.getDesktop().browse(new URI("https://discord.exolia.site"));
             } catch (IOException|java.net.URISyntaxException e1) {
                 e1.printStackTrace();
             }
-        } else if (e.getSource() == this.siteButton) {
+        } else if (event.getSource() == this.siteButton) {
             try {
                 Desktop.getDesktop().browse(new URI("https://exolia.site"));
             } catch (IOException|java.net.URISyntaxException e1) {
                 e1.printStackTrace();
             }
-        } else if (e.getSource() == this.signinButton) {
+        } else if (event.getSource() == this.signinButton) {
             try {
                 Desktop.getDesktop().browse(new URI("https://exolia.site/register"));
             } catch (IOException|java.net.URISyntaxException e1) {
                 e1.printStackTrace();
             }
-        } else if (e.getSource() == this.ramButton) {
+        } else if (event.getSource() == this.ramButton) {
             this.ramSelector.display();
         }
     }
@@ -233,25 +212,20 @@ public class LauncherPanel extends JPanel implements SwingerEventListener {
         super.paintComponent(g);
         g.drawImage(this.background, 0, 0, 1280, 720, this);
     }
-
     public void setFieldsEnabled(boolean enabled) {
         this.usernameField.setEnabled(enabled);
         this.passwordField.setEnabled(enabled);
         this.playButton.setEnabled(enabled);
     }
-
     public SColoredBar getProgressBar() {
         return this.progressBar;
     }
-
     public void setPercentText(String text) {
         percentLabel.setText(text);
     }
-
     public void setStepText(String text) {
         stepLabel.setText(text);
     }
-
     public RamSelector getRamSelector() {
         return this.ramSelector;
     }

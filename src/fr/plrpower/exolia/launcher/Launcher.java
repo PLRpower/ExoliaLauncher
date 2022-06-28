@@ -3,44 +3,48 @@ package fr.plrpower.exolia.launcher;
 import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import club.minnced.discord.rpc.DiscordRichPresence;
-import fr.exolia.auth.mineweb.mc.MinewebGameTweak;
-import fr.exolia.auth.mineweb.mc.MinewebGameType;
-import fr.exolia.auth.mineweb.utils.Get;
+import com.azuriom.azauth.AuthenticationException;
+import com.azuriom.azauth.AzAuthenticator;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
-import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 import fr.flowarg.flowupdater.versions.ForgeVersionBuilder;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
-import fr.flowarg.flowupdater.versions.VersionType;
+import fr.flowarg.openlauncherlib.NewForgeVersionDiscriminator;
 import fr.theshark34.openlauncherlib.LaunchException;
 import fr.theshark34.openlauncherlib.external.ExternalLaunchProfile;
 import fr.theshark34.openlauncherlib.external.ExternalLauncher;
 import fr.theshark34.openlauncherlib.minecraft.*;
+import fr.theshark34.openlauncherlib.minecraft.util.GameDirGenerator;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class Launcher {
 
-    public static final GameVersion EX_VERSION = new GameVersion("1.12.2", MinewebGameType.V1_8_HIGHER);
-    public static GameInfos EX_INFOS = new GameInfos("ExoliaV2", EX_VERSION, new GameTweak[] {MinewebGameTweak.FORGE });
+    public static final GameVersion EX_VERSION = new GameVersion("1.16.5", GameType.V1_13_HIGHER_FORGE.setNFVD(new NewForgeVersionDiscriminator("36.2.34", "1.16.5", "20210115.111550")));
+    public static final GameInfos EX_INFOS = new GameInfos("Osalys", GameDirGenerator.createGameDir("Osalys", true), EX_VERSION, null);
     public static final Path EX_DIR = EX_INFOS.getGameDir();
     public static final File EX_RAM_FILE = new File("ram.txt");
+    public static AuthInfos authInfos;
 
     private static Thread updateThread;
     public static void interruptThread() {
         updateThread.interrupt();
     }
 
-    public static AuthInfos authInfos = new AuthInfos(Get.getSession.getUsername(), Get.getSession.getUuid(), Get.getSession.getClientToken());
+    public static void auth(String username, String password) throws AuthenticationException, IOException {
+        AzAuthenticator authenticator = new AzAuthenticator("https://gracious-joliot.135-125-34-212.plesk.page");
+        authInfos = authenticator.authenticate(username, password, AuthInfos.class);
+    }
 
     private static final Launcher instance = new Launcher();
     public static Launcher getInstance() {
@@ -65,20 +69,19 @@ public class Launcher {
         };
         try {
             VanillaVersion version = (new VanillaVersion.VanillaVersionBuilder())
-                    .withName("1.12.2")
-                    .withVersionType(VersionType.FORGE)
+                    .withName("1.16.5")
                     .build();
-            Logger logger = new Logger("[Exolia]", null);
-            AbstractForgeVersion forge = (new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW))
-                    .withForgeVersion("1.12.2-14.23.5.2860")
-                    .withMods(Mod.getModsFromJson("https://exolia.site/app/webroot/mods.json"))
+            Logger logger = new Logger("[Osalys]", null);
+            AbstractForgeVersion forge = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW)
+                    .withForgeVersion("36.2.35")
+                    //.withMods(Mod.getModsFromJson("https://exolia.site/app/webroot/mods.json"))
                     .withFileDeleter(new ModFileDeleter(true))
                     .build();
             FlowUpdater updater = (new FlowUpdater.FlowUpdaterBuilder())
                     .withVanillaVersion(version)
                     .withLogger(logger)
                     .withProgressCallback(callback)
-                    .withForgeVersion(forge)
+                    .withModLoaderVersion(forge)
                     .withExternalFiles(ExternalFile.getExternalFilesFromJson("https://exolia.site/app/webroot/externalfiles.json"))
                     .build();
             updater.update(EX_DIR);
